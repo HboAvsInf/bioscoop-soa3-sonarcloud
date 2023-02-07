@@ -21,13 +21,13 @@ export class Order {
   }
 
   public calculatePrice(): number {
-    var totalPrice = 0.0;
-    var premiumFee = this.isStudentOrder ? 2 : 3;
-    var isSecondTicketFree = this.isSecondTicketFree();
+    let totalPrice = 0.0;
+    let premiumFee = this.isStudentOrder ? 2 : 3;
+    let isSecondTicketFree = this.isSecondTicketFree();
 
     for (let i = 0; i < this.seatReservations.length; i++) {
-      var ticket = this.seatReservations[i];
-      var ticketPrice = ticket.isPremiumTicket()
+      let ticket = this.seatReservations[i];
+      let ticketPrice = ticket.isPremiumTicket()
         ? ticket.getPrice() + premiumFee
         : ticket.getPrice();
       if (isSecondTicketFree) {
@@ -49,9 +49,9 @@ export class Order {
 
   //check if weekend
   private isWeekend(): boolean {
-    var weekendDays: Array<number> = [0, 5, 6]; //sunday, friday, saturday
+    let weekendDays: Array<number> = [0, 5, 6]; //sunday, friday, saturday
     for (let ticket of this.seatReservations) {
-      var weekdayOfScreening = ticket.getMovieScreening().getDateAndTime().getDay(); //number of weekday
+      let weekdayOfScreening = ticket.getMovieScreening().getDateAndTime().getDay(); //number of weekday
       //if weekdayOfScreening is in weekendDays
       return weekendDays.includes(weekdayOfScreening) ? true : false;
     }
@@ -59,7 +59,7 @@ export class Order {
 
   // get discount if group != isStudent && .length >=6
   private isGroupDiscount(): boolean {
-    var amountOfTickets = this.seatReservations.length;
+    let amountOfTickets = this.seatReservations.length;
     return this.isStudentOrder == false && amountOfTickets >= 6
       ? this.isWeekend()
       : false;

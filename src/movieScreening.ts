@@ -4,12 +4,10 @@ export class MovieScreening {
   private dateAndTime: Date;
   private pricePerSeat: number;
   private isWeekend: boolean;
-  // private movie: Movie;
 
   public constructor(dateAndTime: Date, pricePerSeat: number, movie: Movie) {
     this.dateAndTime = dateAndTime;
     this.pricePerSeat = pricePerSeat;
-    // this.movie = movie;
   }
 
   public getPricePerSeat(): number {
