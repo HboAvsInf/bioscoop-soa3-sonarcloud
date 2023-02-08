@@ -1,2 +1,2 @@
-# bioscoop-soa3-sonarcloud
+# Bioscoop-soa3-sonarcloud
 Voor sonarcloud 😊
