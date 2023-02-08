@@ -1,8 +1,8 @@
-import { Movie } from "./movie";
-import { MovieScreening } from "./movieScreening";
-import { MovieTicket } from "./movieTicket";
-import { Order } from "./order";
-import { TicketExportFormat } from "./ticketExportFormat";
+import { Movie } from "../movie";
+import { MovieScreening } from "../movieScreening";
+import { MovieTicket } from "../movieTicket";
+import { Order } from "../order";
+import { TicketExportFormat } from "../ticketExportFormat";
 
 const order = new Order(1, true);
 let movie = new Movie("Leuke film");
