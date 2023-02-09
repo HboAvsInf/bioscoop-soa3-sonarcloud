@@ -1,2 +1,2 @@
 # Bioscoop soa3 sonarcloud
-Voor sonarcloud 😊
+Voor SonarCloud 😊
