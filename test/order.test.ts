@@ -2,17 +2,18 @@ import { Order } from "../src/order";
 import { Movie } from "../src/movie";
 import { MovieScreening } from "../src/movieScreening";
 import { MovieTicket } from "../src/movieTicket";
+import { CustomerType } from "../src/enumTypes";
 
 describe("Order class testing public methods", () => {
   it("getOrderNr should return order nr", () => {
-    const order = new Order(1, true);
+    const order = new Order(1, CustomerType.STUDENT);
     expect(order.getOrderNr()).toBe(1);
   });
 });
 
 describe("Order class testing calculate price method", () => {
   it("A student can book a premium ticket and should get a +2 fee", () => {
-    const order = new Order(1, true);
+    const order = new Order(1, CustomerType.STUDENT);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -26,7 +27,7 @@ describe("Order class testing calculate price method", () => {
   });
 
   it("A student can book two premium tickets and should get second ticket free (including the +2 fee)", () => {
-    const order = new Order(1, true);
+    const order = new Order(1, CustomerType.STUDENT);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -42,7 +43,7 @@ describe("Order class testing calculate price method", () => {
   });
 
   it("A student can book a regular ticket and should not get a fee", () => {
-    const order = new Order(1, true);
+    const order = new Order(1, CustomerType.STUDENT);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -55,8 +56,8 @@ describe("Order class testing calculate price method", () => {
     expect(order.calculatePrice()).toBe(2);
   });
 
-  it("A student can book a 2 regular ticket on weekend day and should not get a ticket free", () => {
-    const order = new Order(1, false);
+  it("A student can book 2 regular tickets on weekend day and should get a ticket free", () => {
+    const order = new Order(1, CustomerType.STUDENT);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/5/2023 12:00"),
@@ -65,14 +66,14 @@ describe("Order class testing calculate price method", () => {
     );
     movie.addScreening(movieScreening);
     let ticket = new MovieTicket(movieScreening, false, 2, 15);
-    let ticket1 = new MovieTicket(movieScreening, false, 2, 15);
+    let ticket1 = new MovieTicket(movieScreening, false, 2, 16);
     order.addSeatReservation(ticket);
     order.addSeatReservation(ticket1);
-    expect(order.calculatePrice()).toBe(4);
+    expect(order.calculatePrice()).toBe(2);
   });
 
   it("A customer can buy a premium ticket and should get a +3 fee", () => {
-    const order = new Order(1, false);
+    const order = new Order(1, CustomerType.REGULAR);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -86,7 +87,7 @@ describe("Order class testing calculate price method", () => {
   });
 
   it("A customer can buy a regular ticket and should not get a fee", () => {
-    const order = new Order(1, false);
+    const order = new Order(1, CustomerType.REGULAR);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -100,7 +101,7 @@ describe("Order class testing calculate price method", () => {
   });
 
   it("A student can buy 6 tickets and should get each second ticket free including additional fees", () => {
-    const order = new Order(1, true);
+    const order = new Order(1, CustomerType.STUDENT);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -125,7 +126,7 @@ describe("Order class testing calculate price method", () => {
 
 
   it("A customer can buy 6 tickets and should get a 10% discount in the weekend", () => {
-    const order = new Order(1, false);
+    const order = new Order(1, CustomerType.REGULAR);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/4/2023 12:00"),
@@ -149,7 +150,7 @@ describe("Order class testing calculate price method", () => {
   });
 
   it("A customer can buy 6 tickets and in the regular day and doesn't get a discount", () => {
-    const order = new Order(1, false);
+    const order = new Order(1, CustomerType.REGULAR);
     let movie = new Movie("Leuke film");
     let movieScreening = new MovieScreening(
       new Date("2/6/2023 12:00"),

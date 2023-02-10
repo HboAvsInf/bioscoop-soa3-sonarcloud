@@ -1,15 +1,30 @@
 import { MovieTicket } from "./movieTicket";
-import { TicketExportFormat } from "./ticketExportFormat";
-import * as fs from "fs";
+import { IPremiumPriceBehaviour } from "./PremiumPriceStrategy/IPremiumPriceBehaviour";
+import { CustomerType } from "./enumTypes";
+import { TicketExportType } from "./enumTypes";
+import { RegularPremiumPrice } from "./PremiumPriceStrategy/regularPremiumPrice";
+import { StudentPremiumPrice } from "./PremiumPriceStrategy/studentPremiumPrice";
+import { IExportBehaviour } from "./ExportStrategy/IExportBehaviour";
 
 export class Order {
   private orderNr: number;
-  private isStudentOrder: boolean;
   private seatReservations: Array<MovieTicket> = new Array<MovieTicket>();
-
-  public constructor(orderNr: number, isStudentOrder: boolean) {
+  public PremiumPriceBehaviour: IPremiumPriceBehaviour;
+  public CustomerType: CustomerType;
+  
+  public constructor(orderNr: number, customerType: CustomerType) {
     this.orderNr = orderNr;
-    this.isStudentOrder = isStudentOrder;
+    this.CustomerType = customerType;
+    
+    switch (customerType) {
+      case CustomerType.STUDENT:
+        this.PremiumPriceBehaviour = new StudentPremiumPrice();
+        break;
+
+      case CustomerType.REGULAR:
+        this.PremiumPriceBehaviour = new RegularPremiumPrice();
+        break;
+    }
   }
 
   public getOrderNr(): number {
@@ -22,14 +37,12 @@ export class Order {
 
   public calculatePrice(): number {
     let totalPrice = 0.0;
-    let premiumFee = this.isStudentOrder ? 2 : 3;
-    let isSecondTicketFree = this.isSecondTicketFree();
+    let isWeekend = this.isWeekend();
+    let isSecondTicketFree = this.PremiumPriceBehaviour.isSecondTicketFree(isWeekend);
 
     for (let i = 0; i < this.seatReservations.length; i++) {
       let ticket = this.seatReservations[i];
-      let ticketPrice = ticket.isPremiumTicket()
-        ? ticket.getPrice() + premiumFee
-        : ticket.getPrice();
+      let ticketPrice = this.PremiumPriceBehaviour.getPremiumPrice(ticket.getPrice(), ticket.isPremiumTicket());
       if (isSecondTicketFree) {
         if (i % 2 == 0) {
           totalPrice += ticketPrice;
@@ -40,7 +53,7 @@ export class Order {
     }
 
     // get 10% discount if true
-    if (this.isGroupDiscount()) {
+    if (this.PremiumPriceBehaviour.getGroupDiscount(this.seatReservations, isWeekend)) {
       totalPrice *= 0.9;
     }
 
@@ -57,51 +70,15 @@ export class Order {
     }
   }
 
-  // get discount if group != isStudent && .length >=6
-  private isGroupDiscount(): boolean {
-    let amountOfTickets = this.seatReservations.length;
-    return this.isStudentOrder == false && amountOfTickets >= 6
-      ? this.isWeekend()
-      : false;
-  }
-
-  //if student order
-  private isSecondTicketFree(): boolean {
-    return this.isStudentOrder ? this.isStudentOrder : !this.isWeekend();
-  }
-
-  public export(exportFormat: TicketExportFormat): void {
-    if (exportFormat == TicketExportFormat.PLAINTEXT) {
-      fs.writeFile(
-        `resources/txt/order-${this.orderNr}.txt`,
-        this.toString(),
-        function (err) {
-          if (err) {
-            return console.error(err);
-          }
-          console.log("Order has been created!");
-        }
-      );
-    } else if (exportFormat == TicketExportFormat.JSON) {
-      const content = JSON.stringify(this, null, 2);
-      fs.writeFile(
-        `resources/json/order-${this.orderNr}.json`,
-        content,
-        (err) => {
-          if (err) {
-            return console.error(err);
-          }
-          console.log("Order has been created!");
-        }
-      );
-
-      // sla op in een download
-    } else {
+  public export(exportBehaviour: IExportBehaviour): void {
+    try {
+      exportBehaviour.exportOrder(this);
+    } catch (error) {
       throw new Error("Invalid data format");
     }
   }
 
   public toString(): string {
-    return `The order number: ${this.orderNr}, the order is from a student ${this.isStudentOrder}, the seat reservations are: ${this.seatReservations}`;
+    return `The order number: ${this.orderNr}, this reservation is for: ${this.CustomerType} and the the seat reservations are: ${this.seatReservations}`;
   }
 }

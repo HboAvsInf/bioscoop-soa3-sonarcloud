@@ -19,7 +19,6 @@ export class MovieTicket {
   }
 
   public isPremiumTicket(): boolean {
-    // is het ticket wel of niet premium; controleer dat hier
     return this.isPremiumReservation;
   }
 
