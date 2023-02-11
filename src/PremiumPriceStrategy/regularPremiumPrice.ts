@@ -2,7 +2,6 @@ import { MovieTicket } from "../movieTicket";
 import { IPremiumPriceBehaviour } from "./IPremiumPriceBehaviour";
 
 export class RegularPremiumPrice implements IPremiumPriceBehaviour {
-  public RegularPremiumPrice() {}
 
   getGroupDiscount(tickets: MovieTicket[], isWeekend: boolean): boolean {
     let amountOfTickets = tickets.length;

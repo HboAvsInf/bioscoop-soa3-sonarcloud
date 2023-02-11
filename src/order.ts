@@ -1,7 +1,6 @@
 import { MovieTicket } from "./movieTicket";
 import { IPremiumPriceBehaviour } from "./PremiumPriceStrategy/IPremiumPriceBehaviour";
 import { CustomerType } from "./enumTypes";
-import { TicketExportType } from "./enumTypes";
 import { RegularPremiumPrice } from "./PremiumPriceStrategy/regularPremiumPrice";
 import { StudentPremiumPrice } from "./PremiumPriceStrategy/studentPremiumPrice";
 import { IExportBehaviour } from "./ExportStrategy/IExportBehaviour";

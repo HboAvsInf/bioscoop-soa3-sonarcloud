@@ -3,8 +3,6 @@ import { IPremiumPriceBehaviour } from "./IPremiumPriceBehaviour";
 
 export class StudentPremiumPrice implements IPremiumPriceBehaviour {
 
-  public StudentPremiumPriceBehaviour() {}
-
   getGroupDiscount(tickets: MovieTicket[], isWeekend: boolean): boolean {
     return false;
   }
